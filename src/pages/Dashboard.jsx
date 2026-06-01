@@ -68,7 +68,7 @@ export default function Dashboard() {
 
           <div className="relative min-h-[18rem] overflow-hidden bg-slate-100">
             <img
-              src="/ee-dashboard-workbench.png"
+              src={`${import.meta.env.BASE_URL}ee-dashboard-workbench.png`}
               alt="工程訓練桌面，包含 PCB、示波器探棒與量測儀器"
               className="h-full min-h-[18rem] w-full object-cover"
             />
