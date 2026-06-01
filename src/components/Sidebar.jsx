@@ -2,6 +2,7 @@ import {
   Activity,
   BookOpenCheck,
   Bug,
+  Car,
   Cpu,
   Gauge,
   LayoutDashboard,
@@ -17,6 +18,7 @@ const navItems = [
   { to: "/circuits", label: "電路基礎", icon: Zap },
   { to: "/protocols", label: "通訊協定", icon: Network },
   { to: "/debug", label: "FA Debug", icon: Bug },
+  { to: "/automotive", label: "車用系統", icon: Car },
   { to: "/quiz", label: "Quiz 測驗", icon: BookOpenCheck },
 ];
 
@@ -25,6 +27,7 @@ const progressItems = [
   { section: "circuits", label: "電路" },
   { section: "protocols", label: "通訊" },
   { section: "debug", label: "Debug" },
+  { section: "automotive", label: "車用" },
 ];
 
 export default function Sidebar({ searchQuery, setSearchQuery, progress }) {
@@ -46,7 +49,7 @@ export default function Sidebar({ searchQuery, setSearchQuery, progress }) {
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.target.value)}
           className="h-full w-full bg-transparent text-slate-900 outline-none placeholder:text-slate-400"
-          placeholder="搜尋元件、電路、協定、案例"
+          placeholder="搜尋元件、電路、協定、案例、車用"
           type="search"
         />
       </label>

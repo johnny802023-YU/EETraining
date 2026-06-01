@@ -13,6 +13,7 @@ const sectionRoutes = {
   circuits: "/circuits",
   protocols: "/protocols",
   debug: "/debug",
+  automotive: "/automotive",
 };
 
 const toneClasses = {
@@ -20,6 +21,7 @@ const toneClasses = {
   blue: "border-blue-100 bg-blue-50 text-blue-700",
   amber: "border-amber-100 bg-amber-50 text-amber-700",
   rose: "border-rose-100 bg-rose-50 text-rose-700",
+  cyan: "border-cyan-100 bg-cyan-50 text-cyan-700",
 };
 
 export default function Dashboard() {
@@ -110,7 +112,11 @@ export default function Dashboard() {
                   <p className="text-xs font-semibold text-slate-500">{item.sectionLabel}</p>
                   <p className="mt-1 font-semibold text-navy-900">{item.name}</p>
                   <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">
-                    {item.summary ?? item.purpose ?? item.useCases?.join("、") ?? item.symptom}
+                    {item.summary ??
+                      item.purpose ??
+                      item.useCases?.join("、") ??
+                      item.symptom ??
+                      item.systemFunction}
                   </p>
                 </Link>
               ))}

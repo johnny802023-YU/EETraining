@@ -5,6 +5,7 @@ import ComponentsPage from "./pages/ComponentsPage.jsx";
 import CircuitsPage from "./pages/CircuitsPage.jsx";
 import ProtocolsPage from "./pages/ProtocolsPage.jsx";
 import DebugPage from "./pages/DebugPage.jsx";
+import AutomotivePage from "./pages/AutomotivePage.jsx";
 import QuizPage from "./pages/QuizPage.jsx";
 import { useLearningProgress } from "./hooks/useLearningProgress.js";
 
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="circuits" element={<CircuitsPage />} />
         <Route path="protocols" element={<ProtocolsPage />} />
         <Route path="debug" element={<DebugPage />} />
+        <Route path="automotive" element={<AutomotivePage />} />
         <Route path="quiz" element={<QuizPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

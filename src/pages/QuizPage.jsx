@@ -4,7 +4,7 @@ import CategoryFilter from "../components/CategoryFilter.jsx";
 import PageHeader from "../components/PageHeader.jsx";
 import { quizzes } from "../data/trainingData.js";
 
-const quizCategories = ["全部", "元件", "電路", "通訊", "FA Debug"];
+const quizCategories = ["全部", "元件", "電路", "通訊", "FA Debug", "車用系統"];
 
 export default function QuizPage() {
   const [activeCategory, setActiveCategory] = useState("全部");
@@ -57,7 +57,7 @@ export default function QuizPage() {
       <PageHeader
         eyebrow="Quiz"
         title="Quiz 測驗"
-        description="單選題涵蓋元件、電路、通訊與 FA Debug，作答後立即顯示結果與解析。"
+        description="單選題涵蓋元件、電路、通訊、FA Debug 與車用系統，作答後立即顯示結果與解析。"
         action={
           <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm">
             <span className="font-semibold text-navy-900">{score}</span>

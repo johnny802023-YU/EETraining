@@ -6,6 +6,17 @@ export const protocolCategories = ["全部", "低速控制", "車用通訊", "�
 
 export const debugCategories = ["全部", "Power", "Signal", "Compliance", "Intermittent"];
 
+export const automotiveCategories = [
+  "全部",
+  "LV 低壓系統",
+  "HV 高壓系統",
+  "Battery 電池系統",
+  "Charging 充電系統",
+  "Drive Unit 驅動系統",
+  "Thermal 熱管理系統",
+  "ADAS / Autopilot",
+];
+
 export const components = [
   {
     id: "resistor",
@@ -478,6 +489,107 @@ export const debugCases = [
   },
 ];
 
+export const automotiveSystems = [
+  {
+    id: "lv-system",
+    category: "LV 低壓系統",
+    name: "低壓供電與車身控制",
+    english: "Low Voltage Power & Body Control",
+    systemFunction: "提供控制器、感測器、車身模組、喚醒與安全邏輯所需的低壓電源與控制網路。",
+    voltageClass: "LV，依車型年份可能為 12V 或 16V 架構，並轉換成 5V、3.3V 等板級 rail。",
+    keyComponents: ["低壓電池", "LV DC/DC", "Body controller", "Fuse / eFuse", "Relay / load switch", "Gateway"],
+    relatedCircuits: ["電源軌設計", "Reset 電路", "Pull-up / Pull-down", "電流感測", "保護電路"],
+    relatedProtocols: ["CAN", "LIN", "Ethernet", "I2C", "UART"],
+    failures: ["低壓電池電壓不足", "DC/DC 未啟動", "喚醒訊號異常", "保險絲或 eFuse 保護", "CAN/LIN 節點離線"],
+    debugFocus: ["先量 LV battery 與 DC/DC 輸出", "確認 wake / sleep 時序", "檢查 fuse 前後壓降", "讀取 body/gateway DTC", "隔離異常負載"],
+    modelYCase: "Model Y 低壓異常時可能出現多模組離線或無法喚醒；實車排查先確認低壓電源健康度，再追 DC/DC、fuse box 與 gateway 通訊狀態。",
+  },
+  {
+    id: "hv-system",
+    category: "HV 高壓系統",
+    name: "高壓配電與安全互鎖",
+    english: "High Voltage Distribution & HVIL",
+    systemFunction: "將高壓電池能量安全分配到 inverter、charger、DC/DC、PTC 或熱管理負載，並監控高壓互鎖。",
+    voltageClass: "HV，牽涉高壓 bus、pre-charge、contactor、insulation 與 HVIL 安全鏈。",
+    keyComponents: ["HV battery junction box", "Contactor", "Pre-charge resistor", "Pyro fuse", "HVIL loop", "Isolation monitor"],
+    relatedCircuits: ["保護電路", "電流感測", "隔離電路", "Gate Drive 電路", "電源軌設計"],
+    relatedProtocols: ["CAN", "Ethernet", "LIN"],
+    failures: ["Pre-charge timeout", "Contactor stuck open/closed", "HVIL open", "絕緣阻抗不足", "高壓感測偏移"],
+    debugFocus: ["不得帶電任意拆測 HV", "讀取 BMS / drive inverter DTC", "確認 HVIL loop continuity", "檢查 pre-charge 電壓爬升", "驗證絕緣監測條件"],
+    modelYCase: "Model Y 若高壓無法 ready，常見排查方向是 HVIL、contactor、pre-charge 與 BMS fault；先用診斷資料確認鎖定原因，再依安全程序處理高壓系統。",
+  },
+  {
+    id: "battery-system",
+    category: "Battery 電池系統",
+    name: "電池包與 BMS",
+    english: "Battery Pack & Battery Management System",
+    systemFunction: "管理電芯電壓、溫度、SOC/SOH、均衡、contactor 控制與高壓安全保護。",
+    voltageClass: "HV 為主，BMS 控制與 sensing 也依賴 LV 供電與隔離量測。",
+    keyComponents: ["Cell module", "BMS master/slave", "Voltage monitor", "Temperature sensor", "Current sensor", "Contactor"],
+    relatedCircuits: ["分壓電路", "RC 濾波", "電流感測", "隔離電路", "保護電路"],
+    relatedProtocols: ["CAN", "isoSPI 類電池監測鏈路", "Ethernet"],
+    failures: ["Cell imbalance", "溫度 sensor 異常", "電流量測 offset", "SOC 估算漂移", "BMS 通訊中斷"],
+    debugFocus: ["比對 cell group 電壓差", "確認 pack current zero offset", "檢查溫度通道合理性", "觀察 charge/discharge 限制原因", "確認 BMS fault latch 條件"],
+    modelYCase: "Model Y 若出現續航或充電限制，排查會從 BMS 報告的 cell imbalance、溫度、pack current 與 contactor 狀態開始，而不是直接判定電池包失效。",
+  },
+  {
+    id: "charging-system",
+    category: "Charging 充電系統",
+    name: "AC/DC 充電與充電通訊",
+    english: "Charging System & Charge Communication",
+    systemFunction: "處理 AC 慢充、DC 快充、充電口偵測、鎖止、溫度監測與車樁通訊。",
+    voltageClass: "LV 控制與通訊，HV 充電功率路徑並存。",
+    keyComponents: ["Charge port", "On-board charger", "DC fast charge path", "Pilot / proximity circuit", "Charge inlet sensor", "HV contactor"],
+    relatedCircuits: ["Level Shift", "保護電路", "電流感測", "隔離電路", "電源軌設計"],
+    relatedProtocols: ["CAN", "PLC / charging communication", "LIN", "Ethernet"],
+    failures: ["無法啟動充電", "充電口鎖止異常", "Pilot / proximity 判斷錯誤", "inlet 溫度過高", "車樁協議握手失敗"],
+    debugFocus: ["確認充電口 LV 供電", "檢查插槍偵測與鎖止狀態", "讀取 charger/BMS fault", "比對 AC 與 DC 充電差異", "記錄車樁與車端 handshake 狀態"],
+    modelYCase: "Model Y 充電失敗時需先分辨是 AC、DC 或特定充電樁才失敗；若只有特定樁異常，優先看 handshake、inlet 溫度與 charge port 狀態。",
+  },
+  {
+    id: "drive-unit",
+    category: "Drive Unit 驅動系統",
+    name: "驅動單元與逆變器",
+    english: "Drive Unit & Traction Inverter",
+    systemFunction: "將高壓 DC 轉成馬達三相 AC，控制扭矩、轉速、回生煞車與驅動安全保護。",
+    voltageClass: "HV power stage 搭配 LV 控制、gate driver、sensor 與通訊。",
+    keyComponents: ["Traction inverter", "IGBT / SiC MOSFET", "Gate driver", "Resolver / position sensor", "Current sensor", "Motor"],
+    relatedCircuits: ["Gate Drive 電路", "電流感測", "隔離電路", "保護電路", "RC 濾波"],
+    relatedProtocols: ["CAN", "Ethernet", "SPI", "I2C"],
+    failures: ["Gate drive UVLO", "phase current sensor offset", "resolver 訊號異常", "inverter overtemp", "DC link ripple 過大"],
+    debugFocus: ["讀取 inverter fault code", "確認 LV control rail", "檢查 gate driver supply 與 fault pin", "比對三相電流合理性", "確認冷卻與溫度 sensor"],
+    modelYCase: "Model Y 若出現加速受限或 drive unit fault，排查會先看 inverter 溫度、三相電流、resolver/position 訊號與 LV control rail，而不是直接拆換馬達。",
+  },
+  {
+    id: "thermal-system",
+    category: "Thermal 熱管理系統",
+    name: "熱管理與冷卻迴路",
+    english: "Thermal Management & Coolant Loop",
+    systemFunction: "管理電池、drive unit、charger、座艙與功率電子的溫度，維持效率、安全與壽命。",
+    voltageClass: "LV 控制泵浦、閥與感測器；部分加熱或壓縮機負載可能接 HV。",
+    keyComponents: ["Coolant pump", "Valve actuator", "Temperature sensor", "Compressor", "Heat exchanger", "PTC / heater"],
+    relatedCircuits: ["MOSFET 開關", "電流感測", "Pull-up / Pull-down", "保護電路", "Sensor Signal 調理"],
+    relatedProtocols: ["LIN", "CAN", "PWM", "I2C"],
+    failures: ["泵浦卡滯", "閥位回授異常", "溫度 sensor 漂移", "冷媒/冷卻液不足", "高溫導致功率限制"],
+    debugFocus: ["比較 command 與 feedback", "量測泵浦/閥供電與電流", "確認溫度曲線合理性", "檢查冷卻液循環", "讀取 thermal controller fault"],
+    modelYCase: "Model Y 若快充降速或高負載後限功率，熱管理是關鍵檢查項；需比對 battery、inverter、charger 溫度與泵浦/閥動作是否一致。",
+  },
+  {
+    id: "adas-autopilot",
+    category: "ADAS / Autopilot",
+    name: "ADAS 感知與自動輔助駕駛",
+    english: "ADAS Sensing & Autopilot Compute",
+    systemFunction: "整合攝影機、雷達/超音波依車型配置、運算平台與控制網路，提供輔助駕駛與安全警示。",
+    voltageClass: "LV 系統，重點在供電完整性、高速資料鏈路、時脈、重置與散熱。",
+    keyComponents: ["Camera", "Autopilot computer", "Gateway", "Ethernet switch/PHY", "Power regulator", "IMU / sensor"],
+    relatedCircuits: ["電源軌設計", "Reset 電路", "Level Shift", "保護電路", "RC 濾波"],
+    relatedProtocols: ["Ethernet", "CAN", "PCIe", "I2C", "SPI"],
+    failures: ["Camera offline", "影像鏈路不穩", "compute thermal throttling", "Ethernet link fail", "校正狀態異常"],
+    debugFocus: ["確認 camera power 與 reset", "讀取 link status 與 DTC", "檢查 connector/線束", "確認 compute 溫度與供電", "比對校正與遮蔽條件"],
+    modelYCase: "Model Y 若出現輔助駕駛功能受限，需先確認攝影機是否離線、鏡頭是否遮蔽、運算模組溫度與 Ethernet/CAN 狀態，再進一步判斷硬體或校正問題。",
+  },
+];
+
 export const quizzes = [
   {
     id: "q-component-cap",
@@ -543,6 +655,22 @@ export const quizzes = [
     answer: 0,
     explanation: "沒有重現條件就難以比較 A/B 與驗證修正，logging、trigger 與環境條件是關鍵。",
   },
+  {
+    id: "q-auto-hvil",
+    category: "車用系統",
+    question: "EV 高壓系統無法 ready 時，哪一項最適合作為早期檢查方向？",
+    options: ["HVIL、pre-charge 與 BMS fault 狀態", "只更換螢幕", "先調整 I2C 上拉", "只看車身外觀"],
+    answer: 0,
+    explanation: "高壓 ready 需要安全互鎖、pre-charge、contactor 與 BMS 條件成立，應先讀取故障狀態並依高壓安全程序排查。",
+  },
+  {
+    id: "q-auto-low-voltage",
+    category: "車用系統",
+    question: "多個車身模組同時離線時，最應先確認哪個基礎條件？",
+    options: ["低壓電源、wake 訊號與 gateway 通訊", "輪胎花紋", "USB 線外觀", "座椅位置"],
+    answer: 0,
+    explanation: "多模組離線常與低壓供電、喚醒時序或 gateway 網路有關，先確認共同基礎條件可避免誤判單一模組故障。",
+  },
 ];
 
 export const kpis = [
@@ -574,6 +702,13 @@ export const kpis = [
     unit: "個案例",
     tone: "rose",
   },
+  {
+    id: "automotive",
+    title: "車用系統",
+    value: automotiveSystems.length,
+    unit: "個系統",
+    tone: "cyan",
+  },
 ];
 
 export const learningPath = [
@@ -593,6 +728,10 @@ export const learningPath = [
     title: "第 4 週：FA Debug 流程",
     detail: "用無電源、短路、margin、間歇性失效案例整理系統化分析方法。",
   },
+  {
+    title: "EV 入門路徑：車用系統架構",
+    detail: "從 LV/HV、電池、充電、驅動、熱管理到 ADAS，建立整車系統與 EE debug 的連結。",
+  },
 ];
 
 export const dailyQuestion = {
@@ -606,6 +745,7 @@ export const allLearningItems = [
   ...circuits.map((item) => ({ ...item, section: "circuits", sectionLabel: "電路基礎" })),
   ...protocols.map((item) => ({ ...item, section: "protocols", sectionLabel: "通訊協定" })),
   ...debugCases.map((item) => ({ ...item, section: "debug", sectionLabel: "FA Debug" })),
+  ...automotiveSystems.map((item) => ({ ...item, section: "automotive", sectionLabel: "車用系統" })),
 ];
 
 export const sectionCollections = {
@@ -613,4 +753,5 @@ export const sectionCollections = {
   circuits,
   protocols,
   debug: debugCases,
+  automotive: automotiveSystems,
 };
