@@ -36,7 +36,7 @@ export default function Sidebar({ searchQuery, setSearchQuery, progress }) {
         </div>
         <div className="min-w-0">
           <p className="text-sm font-semibold text-navy-900">EE 基礎訓練平台</p>
-          <p className="text-xs text-slate-500">OEM / EMS Training</p>
+          <p className="text-xs text-slate-500">For EE Training</p>
         </div>
       </div>
 

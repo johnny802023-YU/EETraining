@@ -33,12 +33,12 @@ export default function Dashboard() {
       <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-card">
         <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
           <div className="p-6 sm:p-8 lg:p-10">
-            <p className="text-sm font-semibold text-signal-green">OEM / EMS EE Training</p>
+            <p className="text-sm font-semibold text-signal-green">For EE Training</p>
             <h1 className="mt-3 max-w-3xl text-4xl font-semibold leading-tight text-navy-900 lg:text-5xl">
               EE 基礎訓練平台
             </h1>
             <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">
-              給 OEM/EMS 電子工程師的實戰型基礎訓練網站
+              給電子工程師的實戰性基礎訓練網站
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
