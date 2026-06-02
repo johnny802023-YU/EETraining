@@ -32,6 +32,8 @@ export default function ComponentsPage() {
             <ContentCard
               key={item.id}
               itemId={item.id}
+              section="components"
+              sectionLabel="元件資料庫"
               title={item.name}
               subtitle={item.english}
               category={item.category}

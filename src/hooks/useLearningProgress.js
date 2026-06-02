@@ -16,7 +16,7 @@ function loadProgress() {
   }
 }
 
-export function useLearningProgress() {
+export function useLearningProgress({ onCompletionChange } = {}) {
   const [completedIds, setCompletedIds] = useState(loadProgress);
 
   useEffect(() => {
@@ -33,10 +33,18 @@ export function useLearningProgress() {
   const total = allIds.length;
   const completed = allIds.filter((id) => completedSet.has(id)).length;
 
-  function toggleCompletion(id) {
+  function toggleCompletion(id, item = {}) {
+    const completed = !completedSet.has(id);
+
     setCompletedIds((current) =>
       current.includes(id) ? current.filter((itemId) => itemId !== id) : [...current, id],
     );
+
+    onCompletionChange?.({
+      completed,
+      itemId: id,
+      ...item,
+    });
   }
 
   function isCompleted(id) {

@@ -32,6 +32,8 @@ export default function ProtocolsPage() {
             <ContentCard
               key={item.id}
               itemId={item.id}
+              section="protocols"
+              sectionLabel="通訊協定"
               title={item.name}
               category={item.category}
               description={item.signalLines}

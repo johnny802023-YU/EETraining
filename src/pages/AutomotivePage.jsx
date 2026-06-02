@@ -34,6 +34,8 @@ export default function AutomotivePage() {
             <ContentCard
               key={item.id}
               itemId={item.id}
+              section="automotive"
+              sectionLabel="車用系統"
               title={item.name}
               subtitle={item.english}
               category={item.category}

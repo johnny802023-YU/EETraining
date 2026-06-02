@@ -1,5 +1,6 @@
 import { CheckCircle2, ChevronLeft, ChevronRight, XCircle } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import CategoryFilter from "../components/CategoryFilter.jsx";
 import PageHeader from "../components/PageHeader.jsx";
 import { quizzes } from "../data/trainingData.js";
@@ -7,6 +8,7 @@ import { quizzes } from "../data/trainingData.js";
 const quizCategories = ["全部", "元件", "電路", "通訊", "FA Debug", "車用系統"];
 
 export default function QuizPage() {
+  const { trainingRecords } = useOutletContext();
   const [activeCategory, setActiveCategory] = useState("全部");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -45,6 +47,14 @@ export default function QuizPage() {
       ...current,
       [currentQuestion.id]: index === currentQuestion.answer,
     }));
+    trainingRecords.recordQuizAnswer({
+      questionId: currentQuestion.id,
+      category: currentQuestion.category,
+      question: currentQuestion.question,
+      selectedOption: currentQuestion.options[index],
+      correctOption: currentQuestion.options[currentQuestion.answer],
+      isCorrect: index === currentQuestion.answer,
+    });
   }
 
   function goToQuestion(direction) {

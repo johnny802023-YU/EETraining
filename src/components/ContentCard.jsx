@@ -27,6 +27,9 @@ export default function ContentCard({
   description,
   details,
   itemId,
+  itemName,
+  section,
+  sectionLabel,
   isCompleted,
   onToggleComplete,
 }) {
@@ -65,7 +68,14 @@ export default function ContentCard({
       <div className="mt-auto pt-5">
         <button
           type="button"
-          onClick={() => onToggleComplete(itemId)}
+          onClick={() =>
+            onToggleComplete(itemId, {
+              itemName: itemName ?? title,
+              section,
+              sectionLabel,
+              category,
+            })
+          }
           className={[
             "focus-ring flex h-10 w-full items-center justify-center gap-2 rounded-lg border text-sm font-semibold transition",
             isCompleted

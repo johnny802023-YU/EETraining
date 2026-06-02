@@ -7,6 +7,7 @@ import {
   Gauge,
   LayoutDashboard,
   Network,
+  ClipboardList,
   Search,
   Zap,
 } from "lucide-react";
@@ -20,6 +21,7 @@ const navItems = [
   { to: "/debug", label: "FA Debug", icon: Bug },
   { to: "/automotive", label: "車用系統", icon: Car },
   { to: "/quiz", label: "Quiz 測驗", icon: BookOpenCheck },
+  { to: "/records", label: "學習紀錄", icon: ClipboardList },
 ];
 
 const progressItems = [

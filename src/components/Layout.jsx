@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar.jsx";
 
-export default function Layout({ progress }) {
+export default function Layout({ progress, trainingRecords }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
@@ -13,7 +13,7 @@ export default function Layout({ progress }) {
         progress={progress}
       />
       <main className="mx-auto min-h-screen w-full max-w-[1500px] px-4 py-5 md:pl-[18.5rem] md:pr-6 lg:py-7">
-        <Outlet context={{ searchQuery, setSearchQuery, progress }} />
+        <Outlet context={{ searchQuery, setSearchQuery, progress, trainingRecords }} />
       </main>
     </div>
   );

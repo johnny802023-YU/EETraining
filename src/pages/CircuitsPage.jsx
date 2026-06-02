@@ -32,6 +32,8 @@ export default function CircuitsPage() {
             <ContentCard
               key={item.id}
               itemId={item.id}
+              section="circuits"
+              sectionLabel="電路基礎"
               title={item.name}
               category={item.category}
               description={item.purpose}

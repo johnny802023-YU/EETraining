@@ -32,6 +32,8 @@ export default function DebugPage() {
             <ContentCard
               key={item.id}
               itemId={item.id}
+              section="debug"
+              sectionLabel="FA Debug"
               title={item.name}
               category={item.category}
               description={item.symptom}
