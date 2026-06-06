@@ -7,6 +7,18 @@ import { quizzes } from "../data/trainingData.js";
 
 const quizCategories = ["全部", "元件", "電路", "通訊", "FA Debug", "車用系統"];
 
+function getQuestionSeed(questionId) {
+  return String(questionId)
+    .split("")
+    .reduce((sum, char) => sum + char.charCodeAt(0), 0);
+}
+
+function getDisplayOptions(question) {
+  const options = question.options.map((label, originalIndex) => ({ label, originalIndex }));
+  const offset = (getQuestionSeed(question.id) % (options.length - 1)) + 1;
+  return [...options.slice(offset), ...options.slice(0, offset)];
+}
+
 export default function QuizPage() {
   const { trainingRecords } = useOutletContext();
   const [activeCategory, setActiveCategory] = useState("全部");
@@ -22,7 +34,9 @@ export default function QuizPage() {
   }, [activeCategory]);
 
   const currentQuestion = questions[currentIndex] ?? questions[0];
-  const isCorrect = answered && selectedOption === currentQuestion.answer;
+  const displayOptions = useMemo(() => getDisplayOptions(currentQuestion), [currentQuestion]);
+  const correctDisplayIndex = displayOptions.findIndex((option) => option.originalIndex === currentQuestion.answer);
+  const isCorrect = answered && selectedOption === correctDisplayIndex;
   const score = Object.values(scoreByQuestion).filter(Boolean).length;
 
   function resetQuestionState(nextIndex = 0) {
@@ -45,15 +59,15 @@ export default function QuizPage() {
     setAnswered(true);
     setScoreByQuestion((current) => ({
       ...current,
-      [currentQuestion.id]: index === currentQuestion.answer,
+      [currentQuestion.id]: index === correctDisplayIndex,
     }));
     trainingRecords.recordQuizAnswer({
       questionId: currentQuestion.id,
       category: currentQuestion.category,
       question: currentQuestion.question,
-      selectedOption: currentQuestion.options[index],
-      correctOption: currentQuestion.options[currentQuestion.answer],
-      isCorrect: index === currentQuestion.answer,
+      selectedOption: displayOptions[index].label,
+      correctOption: displayOptions[correctDisplayIndex].label,
+      isCorrect: index === correctDisplayIndex,
     });
   }
 
@@ -91,14 +105,14 @@ export default function QuizPage() {
           <h2 className="text-2xl font-semibold leading-9 text-navy-900">{currentQuestion.question}</h2>
 
           <div className="mt-6 grid gap-3">
-            {currentQuestion.options.map((option, index) => {
+            {displayOptions.map((option, index) => {
               const selected = selectedOption === index;
-              const correctAnswer = answered && currentQuestion.answer === index;
-              const wrongAnswer = answered && selected && currentQuestion.answer !== index;
+              const correctAnswer = answered && correctDisplayIndex === index;
+              const wrongAnswer = answered && selected && correctDisplayIndex !== index;
 
               return (
                 <button
-                  key={option}
+                  key={`${option.originalIndex}-${option.label}`}
                   type="button"
                   onClick={() => handleAnswer(index)}
                   className={[
@@ -113,7 +127,7 @@ export default function QuizPage() {
                   ].join(" ")}
                   disabled={answered}
                 >
-                  <span>{option}</span>
+                  <span>{option.label}</span>
                   {correctAnswer ? <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden="true" /> : null}
                   {wrongAnswer ? <XCircle className="h-5 w-5 shrink-0" aria-hidden="true" /> : null}
                 </button>
