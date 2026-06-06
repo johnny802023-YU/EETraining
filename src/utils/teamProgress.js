@@ -38,37 +38,37 @@ const badgeDefinitions = [
   {
     id: "protocol-expert",
     label: "Protocol Expert",
-    description: "完成通訊協定 3 張以上，具備車用通訊與協定 debug 基礎。",
+    description: "完成通訊協定 6 張以上，或該章節完成率達 80%。",
     predicate: ({ sectionProgress }) => {
       const protocols = sectionProgress.find((section) => section.section === "protocols");
-      return protocols?.completed >= 3 || protocols?.percent >= 50;
+      return protocols?.completed >= 6 || protocols?.percent >= 80;
     },
   },
   {
-    id: "power-design-lv2",
-    label: "Power Design Lv2",
-    description: "完成電路基礎 3 張以上，具備電源與基礎電路設計能力。",
+    id: "circuit-expert",
+    label: "Circuit Expert",
+    description: "完成電路基礎 8 張以上，或該章節完成率達 80%。",
     predicate: ({ sectionProgress }) => {
       const circuits = sectionProgress.find((section) => section.section === "circuits");
-      return circuits?.completed >= 3 || circuits?.percent >= 50;
+      return circuits?.completed >= 8 || circuits?.percent >= 80;
     },
   },
   {
     id: "fa-investigator",
     label: "FA Investigator",
-    description: "完成 FA Debug 3 張以上，具備問題分析與排查思維。",
+    description: "完成 FA Debug 6 張以上，或該章節完成率達 80%。",
     predicate: ({ sectionProgress }) => {
       const debug = sectionProgress.find((section) => section.section === "debug");
-      return debug?.completed >= 3 || debug?.percent >= 50;
+      return debug?.completed >= 6 || debug?.percent >= 80;
     },
   },
   {
     id: "component-fundamentals",
     label: "Component Fundamentals",
-    description: "完成元件基礎 3 張以上，具備被動、主動與保護元件基礎。",
+    description: "完成元件基礎 15 張以上，或該章節完成率達 80%。",
     predicate: ({ sectionProgress }) => {
       const components = sectionProgress.find((section) => section.section === "components");
-      return components?.completed >= 3 || components?.percent >= 50;
+      return components?.completed >= 15 || components?.percent >= 80;
     },
   },
   {
