@@ -88,6 +88,18 @@ const badgeDefinitions = [
   },
 ];
 
+export function buildSkillBadges({ sectionProgress = [], quizAnswered = 0, quizAccuracy = 0 }) {
+  const badgeContext = {
+    sectionProgress,
+    quizAnswered,
+    quizAccuracy,
+  };
+
+  return badgeDefinitions
+    .filter((badge) => badge.predicate(badgeContext))
+    .map(({ id, label, description }) => ({ id, label, description }));
+}
+
 function normalize(value) {
   return String(value ?? "").trim();
 }
@@ -312,15 +324,11 @@ export function buildStudentSummaries(records, sectionCollections) {
       };
     });
 
-    const badgeContext = {
+    const badges = buildSkillBadges({
       sectionProgress,
-      completionRate,
       quizAnswered: quizRecords.length,
       quizAccuracy,
-    };
-    const badges = badgeDefinitions
-      .filter((badge) => badge.predicate(badgeContext))
-      .map(({ id, label, description }) => ({ id, label, description }));
+    });
 
     return {
       ...student,

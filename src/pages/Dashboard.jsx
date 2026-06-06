@@ -1,5 +1,6 @@
 import {
   ArrowRight,
+  Award,
   BookOpen,
   CheckCircle2,
   CircleHelp,
@@ -11,8 +12,10 @@ import {
   dailyQuestion,
   kpis,
   learningPath,
+  sectionCollections,
 } from "../data/trainingData.js";
 import { itemMatchesQuery } from "../utils/search.js";
+import { buildSkillBadges } from "../utils/teamProgress.js";
 
 const sectionRoutes = {
   components: "/components",
@@ -30,11 +33,34 @@ const toneClasses = {
   cyan: "border-cyan-100 bg-cyan-50 text-cyan-700",
 };
 
+function BadgePill({ badge }) {
+  return (
+    <span
+      className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800"
+      title={badge.description}
+    >
+      <Award className="h-3.5 w-3.5" aria-hidden="true" />
+      {badge.label}
+    </span>
+  );
+}
+
 export default function Dashboard() {
-  const { searchQuery, progress } = useOutletContext();
+  const { searchQuery, progress, trainingRecords } = useOutletContext();
   const searchResults = searchQuery
     ? allLearningItems.filter((item) => itemMatchesQuery(item, searchQuery)).slice(0, 8)
     : [];
+  const quizRecords = trainingRecords.records.filter((record) => record.type === "quiz");
+  const quizCorrect = quizRecords.filter((record) => record.isCorrect === true).length;
+  const sectionProgress = Object.keys(sectionCollections).map((section) => ({
+    section,
+    ...progress.getSectionProgress(section),
+  }));
+  const myBadges = buildSkillBadges({
+    sectionProgress,
+    quizAnswered: quizRecords.length,
+    quizAccuracy: quizRecords.length ? Math.round((quizCorrect / quizRecords.length) * 100) : 0,
+  });
 
   return (
     <div className="space-y-6">
@@ -132,6 +158,32 @@ export default function Dashboard() {
           )}
         </section>
       ) : null}
+
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Award className="h-5 w-5 text-amber-600" aria-hidden="true" />
+              <h2 className="text-2xl font-semibold text-navy-900">我的技能徽章</h2>
+            </div>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              依照你目前這台瀏覽器的完成項目與 Quiz 作答紀錄產生，作為個人學習成果展示。
+            </p>
+          </div>
+          <div className="rounded-lg border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+            {myBadges.length} badges
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {myBadges.length ? (
+            myBadges.map((badge) => <BadgePill key={badge.id} badge={badge} />)
+          ) : (
+            <p className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4 text-sm leading-6 text-slate-500">
+              尚未取得徽章。完成更多學習卡片或 Quiz 後，這裡會顯示你的技能徽章。
+            </p>
+          )}
+        </div>
+      </section>
 
       <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
