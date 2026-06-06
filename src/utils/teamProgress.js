@@ -137,11 +137,15 @@ export function getRecordKey(record) {
 
 export function normalizeImportedRecord(row, fallbackProfile = {}) {
   const type = normalizeKey(row[csvHeaders.type]);
+  const rowStudentName = normalize(row[csvHeaders.studentName]);
+  const fallbackStudentName = normalize(fallbackProfile.studentName);
 
   return {
     recordId: normalize(row[csvHeaders.recordId]),
     createdAt: normalize(row[csvHeaders.createdAt]),
-    studentName: normalize(row[csvHeaders.studentName]) || normalize(fallbackProfile.studentName),
+    studentName: fallbackProfile.preferStudentName
+      ? fallbackStudentName || rowStudentName
+      : rowStudentName || fallbackStudentName,
     studentEmail: normalize(row[csvHeaders.studentEmail]) || normalize(fallbackProfile.studentEmail),
     department: normalize(row[csvHeaders.department]) || normalize(fallbackProfile.department),
     type,
@@ -190,9 +194,28 @@ export function buildStudentSummaries(records, sectionCollections) {
   });
   const totalItems = sectionMeta.reduce((sum, section) => sum + section.total, 0);
   const studentMap = new Map();
+  const namesByEmail = new Map();
 
   records.forEach((record) => {
-    const studentKey = normalizeKey(record.studentEmail) || normalizeKey(record.studentName) || "unknown-student";
+    const email = normalizeKey(record.studentEmail);
+    const name = normalize(record.studentName);
+    if (!email || !name) {
+      return;
+    }
+
+    if (!namesByEmail.has(email)) {
+      namesByEmail.set(email, new Set());
+    }
+    namesByEmail.get(email).add(name);
+  });
+
+  records.forEach((record) => {
+    const email = normalizeKey(record.studentEmail);
+    const name = normalize(record.studentName);
+    const hasDuplicateEmailNames = email && namesByEmail.get(email)?.size > 1;
+    const studentKey = hasDuplicateEmailNames
+      ? `${email}|${normalizeKey(name)}`
+      : email || normalizeKey(name) || "unknown-student";
     if (!studentMap.has(studentKey)) {
       studentMap.set(studentKey, {
         studentKey,

@@ -28,8 +28,10 @@ function readFileAsText(file) {
 
 function inferProfileFromFilename(filename) {
   const match = String(filename ?? "").match(/^EETraining-(.+)-\d{4}-\d{2}-\d{2}\.csv$/i);
+  const studentName = match ? match[1].trim() : "";
   return {
-    studentName: match ? match[1].trim() : "",
+    studentName,
+    preferStudentName: Boolean(studentName && studentName.toLowerCase() !== "student"),
   };
 }
 
