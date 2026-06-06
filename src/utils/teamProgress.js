@@ -36,8 +36,8 @@ const sectionLabels = {
 
 const badgeDefinitions = [
   {
-    id: "can-expert",
-    label: "CAN Expert",
+    id: "protocol-expert",
+    label: "Protocol Expert",
     description: "完成通訊協定 3 張以上，具備車用通訊與協定 debug 基礎。",
     predicate: ({ sectionProgress }) => {
       const protocols = sectionProgress.find((section) => section.section === "protocols");
@@ -63,9 +63,9 @@ const badgeDefinitions = [
     },
   },
   {
-    id: "emc-specialist",
-    label: "EMC Specialist",
-    description: "完成元件基礎 3 張以上，具備保護、濾波與雜訊相關元件基礎。",
+    id: "component-fundamentals",
+    label: "Component Fundamentals",
+    description: "完成元件基礎 3 張以上，具備被動、主動與保護元件基礎。",
     predicate: ({ sectionProgress }) => {
       const components = sectionProgress.find((section) => section.section === "components");
       return components?.completed >= 3 || components?.percent >= 50;
