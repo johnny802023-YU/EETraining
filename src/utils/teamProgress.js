@@ -34,57 +34,187 @@ const sectionLabels = {
   automotive: "車用系統",
 };
 
-const badgeDefinitions = [
+function sectionStat(sectionProgress, section) {
+  return sectionProgress.find((item) => item.section === section) ?? { completed: 0, percent: 0 };
+}
+
+const badgeTracks = [
   {
-    id: "protocol-expert",
-    label: "Protocol Expert",
-    description: "完成通訊協定 6 張以上，或該章節完成率達 80%。",
-    predicate: ({ sectionProgress }) => {
-      const protocols = sectionProgress.find((section) => section.section === "protocols");
-      return protocols?.completed >= 6 || protocols?.percent >= 80;
-    },
+    id: "protocol",
+    levels: [
+      {
+        id: "protocol-lv1",
+        label: "Protocol Lv1",
+        description: "通訊協定完成 2 張以上，或該章節完成率達 25%。",
+        predicate: ({ sectionProgress }) => {
+          const protocols = sectionStat(sectionProgress, "protocols");
+          return protocols.completed >= 2 || protocols.percent >= 25;
+        },
+      },
+      {
+        id: "protocol-lv2",
+        label: "Protocol Lv2",
+        description: "通訊協定完成 4 張以上，或該章節完成率達 50%。",
+        predicate: ({ sectionProgress }) => {
+          const protocols = sectionStat(sectionProgress, "protocols");
+          return protocols.completed >= 4 || protocols.percent >= 50;
+        },
+      },
+      {
+        id: "protocol-expert",
+        label: "Protocol Expert",
+        description: "通訊協定完成 6 張以上，或該章節完成率達 80%。",
+        predicate: ({ sectionProgress }) => {
+          const protocols = sectionStat(sectionProgress, "protocols");
+          return protocols.completed >= 6 || protocols.percent >= 80;
+        },
+      },
+    ],
   },
   {
-    id: "circuit-expert",
-    label: "Circuit Expert",
-    description: "完成電路基礎 8 張以上，或該章節完成率達 80%。",
-    predicate: ({ sectionProgress }) => {
-      const circuits = sectionProgress.find((section) => section.section === "circuits");
-      return circuits?.completed >= 8 || circuits?.percent >= 80;
-    },
+    id: "circuit",
+    levels: [
+      {
+        id: "circuit-lv1",
+        label: "Circuit Lv1",
+        description: "電路基礎完成 3 張以上，或該章節完成率達 25%。",
+        predicate: ({ sectionProgress }) => {
+          const circuits = sectionStat(sectionProgress, "circuits");
+          return circuits.completed >= 3 || circuits.percent >= 25;
+        },
+      },
+      {
+        id: "circuit-lv2",
+        label: "Circuit Lv2",
+        description: "電路基礎完成 6 張以上，或該章節完成率達 50%。",
+        predicate: ({ sectionProgress }) => {
+          const circuits = sectionStat(sectionProgress, "circuits");
+          return circuits.completed >= 6 || circuits.percent >= 50;
+        },
+      },
+      {
+        id: "circuit-expert",
+        label: "Circuit Expert",
+        description: "電路基礎完成 8 張以上，或該章節完成率達 80%。",
+        predicate: ({ sectionProgress }) => {
+          const circuits = sectionStat(sectionProgress, "circuits");
+          return circuits.completed >= 8 || circuits.percent >= 80;
+        },
+      },
+    ],
   },
   {
-    id: "fa-investigator",
-    label: "FA Investigator",
-    description: "完成 FA Debug 6 張以上，或該章節完成率達 80%。",
-    predicate: ({ sectionProgress }) => {
-      const debug = sectionProgress.find((section) => section.section === "debug");
-      return debug?.completed >= 6 || debug?.percent >= 80;
-    },
+    id: "fa-debug",
+    levels: [
+      {
+        id: "fa-debug-lv1",
+        label: "FA Debug Lv1",
+        description: "FA Debug 完成 2 張以上，或該章節完成率達 25%。",
+        predicate: ({ sectionProgress }) => {
+          const debug = sectionStat(sectionProgress, "debug");
+          return debug.completed >= 2 || debug.percent >= 25;
+        },
+      },
+      {
+        id: "fa-debug-lv2",
+        label: "FA Debug Lv2",
+        description: "FA Debug 完成 4 張以上，或該章節完成率達 50%。",
+        predicate: ({ sectionProgress }) => {
+          const debug = sectionStat(sectionProgress, "debug");
+          return debug.completed >= 4 || debug.percent >= 50;
+        },
+      },
+      {
+        id: "fa-investigator-expert",
+        label: "FA Investigator Expert",
+        description: "FA Debug 完成 6 張以上，或該章節完成率達 80%。",
+        predicate: ({ sectionProgress }) => {
+          const debug = sectionStat(sectionProgress, "debug");
+          return debug.completed >= 6 || debug.percent >= 80;
+        },
+      },
+    ],
   },
   {
-    id: "component-fundamentals",
-    label: "Component Fundamentals",
-    description: "完成元件基礎 15 張以上，或該章節完成率達 80%。",
-    predicate: ({ sectionProgress }) => {
-      const components = sectionProgress.find((section) => section.section === "components");
-      return components?.completed >= 15 || components?.percent >= 80;
-    },
+    id: "component",
+    levels: [
+      {
+        id: "component-lv1",
+        label: "Component Lv1",
+        description: "元件基礎完成 5 張以上，或該章節完成率達 25%。",
+        predicate: ({ sectionProgress }) => {
+          const components = sectionStat(sectionProgress, "components");
+          return components.completed >= 5 || components.percent >= 25;
+        },
+      },
+      {
+        id: "component-lv2",
+        label: "Component Lv2",
+        description: "元件基礎完成 10 張以上，或該章節完成率達 50%。",
+        predicate: ({ sectionProgress }) => {
+          const components = sectionStat(sectionProgress, "components");
+          return components.completed >= 10 || components.percent >= 50;
+        },
+      },
+      {
+        id: "component-expert",
+        label: "Component Expert",
+        description: "元件基礎完成 15 張以上，或該章節完成率達 80%。",
+        predicate: ({ sectionProgress }) => {
+          const components = sectionStat(sectionProgress, "components");
+          return components.completed >= 15 || components.percent >= 80;
+        },
+      },
+    ],
   },
   {
-    id: "ev-systems-ready",
-    label: "EV Systems Ready",
-    description: "完成車用系統 3 張以上，具備 EV 系統架構入門能力。",
-    predicate: ({ sectionProgress }) => {
-      const automotive = sectionProgress.find((section) => section.section === "automotive");
-      return automotive?.completed >= 3 || automotive?.percent >= 50;
-    },
+    id: "ev-systems",
+    levels: [
+      {
+        id: "ev-systems-lv1",
+        label: "EV Systems Lv1",
+        description: "車用系統完成 1 張以上。",
+        predicate: ({ sectionProgress }) => sectionStat(sectionProgress, "automotive").completed >= 1,
+      },
+      {
+        id: "ev-systems-lv2",
+        label: "EV Systems Lv2",
+        description: "車用系統完成 2 張以上。",
+        predicate: ({ sectionProgress }) => sectionStat(sectionProgress, "automotive").completed >= 2,
+      },
+      {
+        id: "ev-systems-expert",
+        label: "EV Systems Expert",
+        description: "車用系統完成 3 張以上，或該章節完成率達 50%。",
+        predicate: ({ sectionProgress }) => {
+          const automotive = sectionStat(sectionProgress, "automotive");
+          return automotive.completed >= 3 || automotive.percent >= 50;
+        },
+      },
+    ],
   },
   {
-    id: "quiz-sharp",
-    label: "Quiz Sharp",
-    description: "Quiz 作答 40 題以上且正確率達 80% 以上。",
-    predicate: ({ quizAnswered, quizAccuracy }) => quizAnswered >= 40 && quizAccuracy >= 80,
+    id: "quiz",
+    levels: [
+      {
+        id: "quiz-lv1",
+        label: "Quiz Lv1",
+        description: "Quiz 作答 10 題以上且正確率達 60% 以上。",
+        predicate: ({ quizAnswered, quizAccuracy }) => quizAnswered >= 10 && quizAccuracy >= 60,
+      },
+      {
+        id: "quiz-lv2",
+        label: "Quiz Lv2",
+        description: "Quiz 作答 25 題以上且正確率達 70% 以上。",
+        predicate: ({ quizAnswered, quizAccuracy }) => quizAnswered >= 25 && quizAccuracy >= 70,
+      },
+      {
+        id: "quiz-expert",
+        label: "Quiz Expert",
+        description: "Quiz 作答 40 題以上且正確率達 80% 以上。",
+        predicate: ({ quizAnswered, quizAccuracy }) => quizAnswered >= 40 && quizAccuracy >= 80,
+      },
+    ],
   },
 ];
 
@@ -95,9 +225,12 @@ export function buildSkillBadges({ sectionProgress = [], quizAnswered = 0, quizA
     quizAccuracy,
   };
 
-  return badgeDefinitions
-    .filter((badge) => badge.predicate(badgeContext))
-    .map(({ id, label, description }) => ({ id, label, description }));
+  return badgeTracks.flatMap((track) => {
+    const highestLevel = [...track.levels].reverse().find((badge) => badge.predicate(badgeContext));
+    return highestLevel
+      ? [{ id: highestLevel.id, label: highestLevel.label, description: highestLevel.description }]
+      : [];
+  });
 }
 
 function normalize(value) {
