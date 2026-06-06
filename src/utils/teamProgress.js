@@ -182,7 +182,7 @@ export function getRecordKey(record) {
   }
 
   return [
-    normalizeKey(record.studentEmail) || normalizeKey(record.studentName) || "unknown-student",
+    normalizeKey(record.studentName) || normalizeKey(record.studentEmail) || "unknown-student",
     record.createdAt,
     record.type,
     record.itemId || record.questionId || record.itemName || record.question,
@@ -248,28 +248,11 @@ export function buildStudentSummaries(records, sectionCollections) {
   });
   const totalItems = sectionMeta.reduce((sum, section) => sum + section.total, 0);
   const studentMap = new Map();
-  const namesByEmail = new Map();
 
   records.forEach((record) => {
     const email = normalizeKey(record.studentEmail);
-    const name = normalize(record.studentName);
-    if (!email || !name) {
-      return;
-    }
-
-    if (!namesByEmail.has(email)) {
-      namesByEmail.set(email, new Set());
-    }
-    namesByEmail.get(email).add(name);
-  });
-
-  records.forEach((record) => {
-    const email = normalizeKey(record.studentEmail);
-    const name = normalize(record.studentName);
-    const hasDuplicateEmailNames = email && namesByEmail.get(email)?.size > 1;
-    const studentKey = hasDuplicateEmailNames
-      ? `${email}|${normalizeKey(name)}`
-      : email || normalizeKey(name) || "unknown-student";
+    const name = normalizeKey(record.studentName);
+    const studentKey = name || email || "unknown-student";
     if (!studentMap.has(studentKey)) {
       studentMap.set(studentKey, {
         studentKey,
