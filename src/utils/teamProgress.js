@@ -34,6 +34,60 @@ const sectionLabels = {
   automotive: "車用系統",
 };
 
+const badgeDefinitions = [
+  {
+    id: "can-expert",
+    label: "CAN Expert",
+    description: "完成通訊協定 3 張以上，具備車用通訊與協定 debug 基礎。",
+    predicate: ({ sectionProgress }) => {
+      const protocols = sectionProgress.find((section) => section.section === "protocols");
+      return protocols?.completed >= 3 || protocols?.percent >= 50;
+    },
+  },
+  {
+    id: "power-design-lv2",
+    label: "Power Design Lv2",
+    description: "完成電路基礎 3 張以上，具備電源與基礎電路設計能力。",
+    predicate: ({ sectionProgress }) => {
+      const circuits = sectionProgress.find((section) => section.section === "circuits");
+      return circuits?.completed >= 3 || circuits?.percent >= 50;
+    },
+  },
+  {
+    id: "fa-investigator",
+    label: "FA Investigator",
+    description: "完成 FA Debug 3 張以上，具備問題分析與排查思維。",
+    predicate: ({ sectionProgress }) => {
+      const debug = sectionProgress.find((section) => section.section === "debug");
+      return debug?.completed >= 3 || debug?.percent >= 50;
+    },
+  },
+  {
+    id: "emc-specialist",
+    label: "EMC Specialist",
+    description: "完成元件基礎 3 張以上，具備保護、濾波與雜訊相關元件基礎。",
+    predicate: ({ sectionProgress }) => {
+      const components = sectionProgress.find((section) => section.section === "components");
+      return components?.completed >= 3 || components?.percent >= 50;
+    },
+  },
+  {
+    id: "ev-systems-ready",
+    label: "EV Systems Ready",
+    description: "完成車用系統 3 張以上，具備 EV 系統架構入門能力。",
+    predicate: ({ sectionProgress }) => {
+      const automotive = sectionProgress.find((section) => section.section === "automotive");
+      return automotive?.completed >= 3 || automotive?.percent >= 50;
+    },
+  },
+  {
+    id: "quiz-sharp",
+    label: "Quiz Sharp",
+    description: "完成 5 題以上 Quiz 且正確率達 80% 以上。",
+    predicate: ({ quizAnswered, quizAccuracy }) => quizAnswered >= 5 && quizAccuracy >= 80,
+  },
+];
+
 function normalize(value) {
   return String(value ?? "").trim();
 }
@@ -275,6 +329,16 @@ export function buildStudentSummaries(records, sectionCollections) {
       };
     });
 
+    const badgeContext = {
+      sectionProgress,
+      completionRate,
+      quizAnswered: quizRecords.length,
+      quizAccuracy,
+    };
+    const badges = badgeDefinitions
+      .filter((badge) => badge.predicate(badgeContext))
+      .map(({ id, label, description }) => ({ id, label, description }));
+
     return {
       ...student,
       records: sortedRecords,
@@ -287,11 +351,13 @@ export function buildStudentSummaries(records, sectionCollections) {
       quizAccuracy,
       latestAt: sortedRecords[0]?.createdAt ?? "",
       sectionProgress,
+      badges,
     };
   });
 
   const sortedStudents = students.sort((left, right) => timestamp(right.latestAt) - timestamp(left.latestAt));
   const quizTakers = sortedStudents.filter((student) => student.quizAnswered > 0);
+  const totalBadges = sortedStudents.reduce((sum, student) => sum + student.badges.length, 0);
   const averageCompletionRate = sortedStudents.length
     ? Math.round(sortedStudents.reduce((sum, student) => sum + student.completionRate, 0) / sortedStudents.length)
     : 0;
@@ -306,6 +372,8 @@ export function buildStudentSummaries(records, sectionCollections) {
       recordCount: records.length,
       averageCompletionRate,
       averageQuizAccuracy,
+      averageBadgeCount: sortedStudents.length ? Math.round((totalBadges / sortedStudents.length) * 10) / 10 : 0,
+      totalBadges,
       latestAt: sortedStudents[0]?.latestAt ?? "",
     },
   };

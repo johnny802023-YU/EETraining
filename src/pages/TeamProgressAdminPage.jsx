@@ -1,4 +1,4 @@
-import { ChevronDown, ShieldCheck, Trash2, Upload, Users } from "lucide-react";
+import { Award, ChevronDown, ShieldCheck, TrendingUp, Trash2, Upload, Users } from "lucide-react";
 import { Fragment, useState } from "react";
 import { useTeamProgressImport } from "../hooks/useTeamProgressImport.js";
 
@@ -22,6 +22,18 @@ function TeamStat({ label, value, suffix = "" }) {
         {suffix}
       </p>
     </div>
+  );
+}
+
+function BadgePill({ badge }) {
+  return (
+    <span
+      className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800"
+      title={badge.description}
+    >
+      <Award className="h-3.5 w-3.5" aria-hidden="true" />
+      {badge.label}
+    </span>
   );
 }
 
@@ -64,7 +76,7 @@ export default function TeamProgressAdminPage() {
               <h2 className="text-2xl font-semibold text-navy-900">團隊 CSV 匯入彙整</h2>
             </div>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              匯入多位學員從「學習紀錄」頁匯出的 CSV，系統會在主管端瀏覽器彙整每個人的完成率與 Quiz 表現。
+              匯入多位學員從「學習紀錄」頁匯出的 CSV，系統會在主管端瀏覽器彙整 Team Average、技能徽章與每位學員的學習狀態。
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -100,19 +112,79 @@ export default function TeamProgressAdminPage() {
 
         {students.length ? (
           <>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
               <TeamStat label="Students" value={summary.studentCount} />
               <TeamStat label="Avg Completion" value={summary.averageCompletionRate} suffix="%" />
               <TeamStat label="Avg Quiz Accuracy" value={summary.averageQuizAccuracy} suffix="%" />
+              <TeamStat label="Avg Skill Badges" value={summary.averageBadgeCount} />
               <TeamStat label="Latest Activity" value={formatDateTime(summary.latestAt)} />
             </div>
 
+            <div className="mt-5 rounded-lg border border-navy-100 bg-slate-50 p-4">
+              <div className="mb-4 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-navy-700" aria-hidden="true" />
+                <h3 className="text-lg font-semibold text-navy-900">Team Average</h3>
+              </div>
+              <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+                <div className="rounded-lg border border-slate-200 bg-white p-4">
+                  <p className="text-sm font-semibold text-slate-700">平均學習完成率</p>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="h-3 flex-1 overflow-hidden rounded-full bg-slate-100">
+                      <div
+                        className="h-full rounded-full bg-signal-green"
+                        style={{ width: `${summary.averageCompletionRate}%` }}
+                      />
+                    </div>
+                    <span className="text-xl font-semibold text-navy-900">{summary.averageCompletionRate}%</span>
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-slate-500">
+                    用團隊平均值觀察訓練推進狀態，避免把單一學員完成率當成公開排名。
+                  </p>
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-white p-4">
+                  <p className="text-sm font-semibold text-slate-700">團隊徽章累積</p>
+                  <p className="mt-3 text-3xl font-semibold text-navy-900">{summary.totalBadges}</p>
+                  <p className="mt-2 text-xs leading-5 text-slate-500">
+                    平均每位學員 {summary.averageBadgeCount} 枚技能徽章，適合用來呈現能力分布與訓練成果。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-lg border border-slate-200 bg-white p-4">
+              <div className="mb-4 flex items-center gap-2">
+                <Award className="h-5 w-5 text-amber-600" aria-hidden="true" />
+                <h3 className="text-lg font-semibold text-navy-900">技能徽章牆</h3>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {students.map((student) => (
+                  <div key={student.studentKey} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-semibold text-navy-900">{student.studentName}</p>
+                        <p className="mt-1 text-xs text-slate-500">{student.department || student.studentEmail || "-"}</p>
+                      </div>
+                      <span className="text-sm font-semibold text-amber-700">{student.badges.length} badges</span>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {student.badges.length ? (
+                        student.badges.map((badge) => <BadgePill key={badge.id} badge={badge} />)
+                      ) : (
+                        <span className="text-sm text-slate-500">尚未取得徽章</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="mt-5 overflow-x-auto">
-              <table className="w-full min-w-[980px] text-left text-sm">
+              <table className="w-full min-w-[1080px] text-left text-sm">
                 <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
                   <tr>
                     <th className="px-3 py-3">學員</th>
                     <th className="px-3 py-3">部門</th>
+                    <th className="px-3 py-3">技能徽章</th>
                     <th className="px-3 py-3">完成項目</th>
                     <th className="px-3 py-3">完成率</th>
                     <th className="px-3 py-3">Quiz</th>
@@ -132,6 +204,15 @@ export default function TeamProgressAdminPage() {
                             <p className="text-xs text-slate-500">{student.studentEmail || "-"}</p>
                           </td>
                           <td className="px-3 py-3 text-slate-600">{student.department || "-"}</td>
+                          <td className="px-3 py-3">
+                            <div className="flex max-w-[14rem] flex-wrap gap-1.5">
+                              {student.badges.length ? (
+                                student.badges.map((badge) => <BadgePill key={badge.id} badge={badge} />)
+                              ) : (
+                                <span className="text-xs text-slate-400">-</span>
+                              )}
+                            </div>
+                          </td>
                           <td className="px-3 py-3 text-slate-700">
                             {student.completedItems} / {student.totalItems}
                           </td>
@@ -167,7 +248,7 @@ export default function TeamProgressAdminPage() {
                         </tr>
                         {expanded ? (
                           <tr>
-                            <td colSpan="8" className="bg-slate-50 px-4 py-4">
+                            <td colSpan="9" className="bg-slate-50 px-4 py-4">
                               <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
                                 <div className="rounded-lg border border-slate-200 bg-white p-4">
                                   <p className="font-semibold text-navy-900">章節完成率</p>
