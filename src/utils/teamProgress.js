@@ -135,15 +135,15 @@ export function getRecordKey(record) {
   ].join("|");
 }
 
-export function normalizeImportedRecord(row) {
+export function normalizeImportedRecord(row, fallbackProfile = {}) {
   const type = normalizeKey(row[csvHeaders.type]);
 
   return {
     recordId: normalize(row[csvHeaders.recordId]),
     createdAt: normalize(row[csvHeaders.createdAt]),
-    studentName: normalize(row[csvHeaders.studentName]),
-    studentEmail: normalize(row[csvHeaders.studentEmail]),
-    department: normalize(row[csvHeaders.department]),
+    studentName: normalize(row[csvHeaders.studentName]) || normalize(fallbackProfile.studentName),
+    studentEmail: normalize(row[csvHeaders.studentEmail]) || normalize(fallbackProfile.studentEmail),
+    department: normalize(row[csvHeaders.department]) || normalize(fallbackProfile.department),
     type,
     action: normalize(row[csvHeaders.action]),
     section: normalize(row[csvHeaders.section]),
@@ -160,10 +160,10 @@ export function normalizeImportedRecord(row) {
   };
 }
 
-export function parseImportedCsv(text) {
+export function parseImportedCsv(text, fallbackProfile = {}) {
   const rows = parseCsv(text);
   return csvRowsToObjects(rows)
-    .map(normalizeImportedRecord)
+    .map((row) => normalizeImportedRecord(row, fallbackProfile))
     .filter((record) => record.createdAt && record.type);
 }
 
@@ -204,7 +204,9 @@ export function buildStudentSummaries(records, sectionCollections) {
     }
 
     const student = studentMap.get(studentKey);
-    student.studentName = student.studentName || record.studentName || "未命名學員";
+    if (record.studentName && student.studentName === "未命名學員") {
+      student.studentName = record.studentName;
+    }
     student.studentEmail = student.studentEmail || record.studentEmail;
     student.department = student.department || record.department;
     student.records.push(record);

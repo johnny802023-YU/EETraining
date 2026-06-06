@@ -26,6 +26,13 @@ function readFileAsText(file) {
   });
 }
 
+function inferProfileFromFilename(filename) {
+  const match = String(filename ?? "").match(/^EETraining-(.+)-\d{4}-\d{2}-\d{2}\.csv$/i);
+  return {
+    studentName: match ? match[1].trim() : "",
+  };
+}
+
 export function useTeamProgressImport() {
   const [records, setRecords] = useState(loadTeamRecords);
   const [importStatus, setImportStatus] = useState(null);
@@ -46,7 +53,7 @@ export function useTeamProgressImport() {
       const importedRecords = [];
       for (const file of files) {
         const text = await readFileAsText(file);
-        importedRecords.push(...parseImportedCsv(text));
+        importedRecords.push(...parseImportedCsv(text, inferProfileFromFilename(file.name)));
       }
 
       const merged = mergeRecords(records, importedRecords);

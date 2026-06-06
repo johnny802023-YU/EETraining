@@ -155,9 +155,9 @@ export function useTrainingRecords() {
     const rows = records.map((record) => [
       record.recordId,
       record.createdAt,
-      record.studentName,
-      record.studentEmail,
-      record.department,
+      record.studentName || profile.name,
+      record.studentEmail || profile.email,
+      record.department || profile.department,
       record.type,
       record.action,
       record.section,
