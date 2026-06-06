@@ -83,8 +83,8 @@ const badgeDefinitions = [
   {
     id: "quiz-sharp",
     label: "Quiz Sharp",
-    description: "完成 5 題以上 Quiz 且正確率達 80% 以上。",
-    predicate: ({ quizAnswered, quizAccuracy }) => quizAnswered >= 5 && quizAccuracy >= 80,
+    description: "Quiz 作答 40 題以上且正確率達 80% 以上。",
+    predicate: ({ quizAnswered, quizAccuracy }) => quizAnswered >= 40 && quizAccuracy >= 80,
   },
 ];
 
