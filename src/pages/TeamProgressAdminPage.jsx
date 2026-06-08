@@ -1,6 +1,7 @@
-import { Award, ChevronDown, ShieldCheck, TrendingUp, Trash2, Upload, Users } from "lucide-react";
+import { Award, ChevronDown, Download, ShieldCheck, TrendingUp, Trash2, Upload, Users } from "lucide-react";
 import { Fragment, useState } from "react";
 import { useTeamProgressImport } from "../hooks/useTeamProgressImport.js";
+import { downloadTeamProgressHtmlReport } from "../utils/teamHtmlReport.js";
 
 function formatDateTime(value) {
   if (!value) {
@@ -93,6 +94,15 @@ export default function TeamProgressAdminPage() {
             >
               <Trash2 className="h-4 w-4" aria-hidden="true" />
               清空匯入資料
+            </button>
+            <button
+              type="button"
+              onClick={() => downloadTeamProgressHtmlReport(teamProgress.report)}
+              disabled={!students.length}
+              className="focus-ring inline-flex h-11 items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 text-sm font-semibold text-amber-800 transition hover:bg-amber-100 disabled:opacity-40"
+            >
+              <Download className="h-4 w-4" aria-hidden="true" />
+              匯出 HTML 報告
             </button>
           </div>
         </div>
