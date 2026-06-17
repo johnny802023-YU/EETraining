@@ -32,6 +32,7 @@ const sectionLabels = {
   protocols: "通訊",
   debug: "FA Debug",
   automotive: "車用系統",
+  tools: "量測工具",
 };
 
 function sectionStat(sectionProgress, section) {

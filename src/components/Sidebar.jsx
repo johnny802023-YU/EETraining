@@ -9,6 +9,7 @@ import {
   Network,
   ClipboardList,
   Search,
+  Wrench,
   Zap,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -20,6 +21,7 @@ const navItems = [
   { to: "/protocols", label: "通訊協定", icon: Network },
   { to: "/debug", label: "FA Debug", icon: Bug },
   { to: "/automotive", label: "車用系統", icon: Car },
+  { to: "/tools", label: "量測工具", icon: Wrench },
   { to: "/quiz", label: "Quiz 測驗", icon: BookOpenCheck },
   { to: "/records", label: "學習紀錄", icon: ClipboardList },
 ];
@@ -30,6 +32,7 @@ const progressItems = [
   { section: "protocols", label: "通訊" },
   { section: "debug", label: "Debug" },
   { section: "automotive", label: "車用" },
+  { section: "tools", label: "工具" },
 ];
 
 export default function Sidebar({ searchQuery, setSearchQuery, progress }) {
@@ -51,7 +54,7 @@ export default function Sidebar({ searchQuery, setSearchQuery, progress }) {
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.target.value)}
           className="h-full w-full bg-transparent text-slate-900 outline-none placeholder:text-slate-400"
-          placeholder="搜尋元件、電路、協定、案例、車用"
+          placeholder="搜尋元件、電路、協定、案例、車用、工具"
           type="search"
         />
       </label>
