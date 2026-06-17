@@ -2,14 +2,17 @@ import {
   ArrowRight,
   Award,
   BookOpen,
+  ChevronLeft,
+  ChevronRight,
   CheckCircle2,
   CircleHelp,
   Search,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import {
   allLearningItems,
-  dailyQuestion,
+  dailyQuestions,
   kpis,
   learningPath,
   sectionCollections,
@@ -47,6 +50,7 @@ function BadgePill({ badge }) {
 
 export default function Dashboard() {
   const { searchQuery, progress, trainingRecords } = useOutletContext();
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const searchResults = searchQuery
     ? allLearningItems.filter((item) => itemMatchesQuery(item, searchQuery)).slice(0, 8)
     : [];
@@ -61,6 +65,19 @@ export default function Dashboard() {
     quizAnswered: quizRecords.length,
     quizAccuracy: quizRecords.length ? Math.round((quizCorrect / quizRecords.length) * 100) : 0,
   });
+  const activeQuestion = dailyQuestions[activeQuestionIndex] ?? dailyQuestions[0];
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveQuestionIndex((current) => (current + 1) % dailyQuestions.length);
+    }, 8000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  function showQuestion(offset) {
+    setActiveQuestionIndex((current) => (current + offset + dailyQuestions.length) % dailyQuestions.length);
+  }
 
   return (
     <div className="space-y-6">
@@ -210,21 +227,61 @@ export default function Dashboard() {
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
-          <div className="mb-5 flex items-center gap-2">
-            <CircleHelp className="h-5 w-5 text-signal-amber" aria-hidden="true" />
-            <h2 className="text-2xl font-semibold text-navy-900">{dailyQuestion.title}</h2>
+          <div className="mb-5 flex items-start justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <CircleHelp className="h-5 w-5 text-signal-amber" aria-hidden="true" />
+              <h2 className="text-2xl font-semibold text-navy-900">{activeQuestion.title}</h2>
+            </div>
+            <span className="rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800">
+              {activeQuestion.category}
+            </span>
           </div>
           <div className="rounded-lg border border-amber-100 bg-amber-50 p-4">
-            <p className="text-lg font-semibold leading-7 text-slate-950">{dailyQuestion.question}</p>
-            <p className="mt-4 text-sm leading-6 text-amber-950">{dailyQuestion.answer}</p>
+            <p className="text-lg font-semibold leading-7 text-slate-950">{activeQuestion.question}</p>
+            <p className="mt-4 text-sm leading-6 text-amber-950">{activeQuestion.answer}</p>
           </div>
-          <Link
-            to="/quiz"
-            className="focus-ring mt-5 inline-flex h-11 items-center gap-2 rounded-lg bg-navy-900 px-4 text-sm font-semibold text-white transition hover:bg-navy-800"
-          >
-            前往測驗
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => showQuestion(-1)}
+                className="focus-ring flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-navy-200 hover:bg-navy-50 hover:text-navy-900"
+                aria-label="上一題 EE 問題"
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+              </button>
+              <div className="flex items-center gap-1.5">
+                {dailyQuestions.map((question, index) => (
+                  <button
+                    key={question.id}
+                    type="button"
+                    onClick={() => setActiveQuestionIndex(index)}
+                    className={[
+                      "focus-ring h-2.5 rounded-full transition",
+                      index === activeQuestionIndex ? "w-6 bg-navy-900" : "w-2.5 bg-slate-300 hover:bg-slate-400",
+                    ].join(" ")}
+                    aria-label={`切換到第 ${index + 1} 題 EE 問題`}
+                  />
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => showQuestion(1)}
+                className="focus-ring flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-navy-200 hover:bg-navy-50 hover:text-navy-900"
+                aria-label="下一題 EE 問題"
+              >
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
+
+            <Link
+              to="/quiz"
+              className="focus-ring inline-flex h-11 items-center gap-2 rounded-lg bg-navy-900 px-4 text-sm font-semibold text-white transition hover:bg-navy-800"
+            >
+              前往測驗
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
 
           <div className="mt-6 rounded-lg border border-teal-100 bg-teal-50 p-4">
             <div className="flex items-center gap-2 font-semibold text-teal-800">

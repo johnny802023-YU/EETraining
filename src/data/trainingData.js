@@ -810,11 +810,52 @@ export const learningPath = [
   },
 ];
 
-export const dailyQuestion = {
-  title: "今日 EE 問題",
-  question: "當一條 3.3V rail 空載正常、接上 MCU 後掉到 2.7V，你會先量哪三個點？",
-  answer: "先量 regulator 輸出端、MCU VDD pin 與 EN/PG，再比較壓降、負載電流與是否進入保護。",
-};
+export const dailyQuestions = [
+  {
+    id: "rail-drop-mcu",
+    title: "今日 EE 問題",
+    category: "Power",
+    question: "當一條 3.3V rail 空載正常、接上 MCU 後掉到 2.7V，你會先量哪三個點？",
+    answer: "先量 regulator 輸出端、MCU VDD pin 與 EN/PG，再比較壓降、負載電流與是否進入保護。",
+  },
+  {
+    id: "i2c-no-ack",
+    title: "今日 EE 問題",
+    category: "I2C",
+    question: "I2C 掃描不到 slave address，但電源正常，你會優先檢查哪些項目？",
+    answer: "先看 SDA/SCL 是否有正確上拉、idle high、位準符合雙方 IO 電壓，再用示波器確認 START、address 與 ACK 時序。",
+  },
+  {
+    id: "mosfet-hot",
+    title: "今日 EE 問題",
+    category: "MOSFET",
+    question: "MOSFET 當開關使用時明顯發熱，但負載電流看起來沒有超規，你會量什麼？",
+    answer: "量 VGS、VDS、gate 波形與切換邊緣，確認是否沒有完全導通、切換太慢、body diode 導通或 layout 造成 ringing。",
+  },
+  {
+    id: "can-intermittent",
+    title: "今日 EE 問題",
+    category: "CAN",
+    question: "CAN 通訊偶發 timeout，但重開機後恢復，你會如何快速區分電氣層與軟體層問題？",
+    answer: "斷電量 CANH-CANL 阻抗，開機看差動波形、error frame 與 bus load，同時比對 transceiver 供電、reset 與 software log 時間點。",
+  },
+  {
+    id: "ripple-too-high",
+    title: "今日 EE 問題",
+    category: "Scope",
+    question: "量到 DC/DC output ripple 過高時，怎麼確認是真問題還是量測方式造成？",
+    answer: "先用短 ground spring 或同軸方式重測，確認探棒倍率、bandwidth limit 與量測點，再比較負載端、電容端與 regulator output。",
+  },
+  {
+    id: "intermittent-fail",
+    title: "今日 EE 問題",
+    category: "FA Debug",
+    question: "遇到間歇性失效時，為什麼不應該一開始就直接更換可疑零件？",
+    answer: "因為沒有重現條件與基準資料就無法驗證修正。應先定義現象、建立 trigger/log、記錄環境條件，再做 A/B 對照。",
+  },
+];
+
+export const dailyQuestion = dailyQuestions[0];
 
 export const allLearningItems = [
   ...components.map((item) => ({ ...item, section: "components", sectionLabel: "元件資料庫" })),
