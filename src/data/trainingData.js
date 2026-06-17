@@ -785,6 +785,13 @@ export const kpis = [
     unit: "個系統",
     tone: "cyan",
   },
+  {
+    id: "tools",
+    title: "量測工具",
+    value: measurementTools.length,
+    unit: "種工具",
+    tone: "indigo",
+  },
 ];
 
 export const learningPath = [

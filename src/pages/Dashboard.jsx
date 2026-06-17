@@ -26,6 +26,7 @@ const sectionRoutes = {
   protocols: "/protocols",
   debug: "/debug",
   automotive: "/automotive",
+  tools: "/tools",
 };
 
 const toneClasses = {
@@ -34,6 +35,7 @@ const toneClasses = {
   amber: "border-amber-100 bg-amber-50 text-amber-700",
   rose: "border-rose-100 bg-rose-50 text-rose-700",
   cyan: "border-cyan-100 bg-cyan-50 text-cyan-700",
+  indigo: "border-indigo-100 bg-indigo-50 text-indigo-700",
 };
 
 function BadgePill({ badge }) {
