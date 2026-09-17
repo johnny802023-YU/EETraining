@@ -1,4 +1,5 @@
 import { CheckCircle2, Circle, Wrench } from "lucide-react";
+import LearningResources from "./LearningResources.jsx";
 
 function DetailList({ title, items }) {
   if (!items || items.length === 0) {
@@ -58,6 +59,8 @@ export default function ContentCard({
       </div>
 
       {description ? <p className="mt-4 text-sm leading-6 text-slate-600">{description}</p> : null}
+
+      <LearningResources itemId={itemId} />
 
       <div className="mt-5 grid gap-4">
         {details.map((detail) => (
